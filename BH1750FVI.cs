@@ -18,14 +18,25 @@ namespace Magellanic.Sensors.BH1750FVI
             return I2C_ADDRESS;
         }
 
-        public void PowerOn()
+        public int GetLightLevel()
         {
-            this.Slave.Write(new byte[] { 0x01 });
+            var readBuffer = new byte[2];
+
+            this.Slave.WriteRead(new byte[] { I2C_ADDRESS }, readBuffer);
+
+            var lightLevel = readBuffer[0] << 8 | readBuffer[1];
+
+            return (int)(lightLevel / 1.2f);
         }
 
         public void PowerOff()
         {
             this.Slave.Write(new byte[] { 0x00 });
+        }
+
+        public void PowerOn()
+        {
+            this.Slave.Write(new byte[] { 0x01 });
         }
 
         public void Reset()
@@ -37,17 +48,6 @@ namespace Magellanic.Sensors.BH1750FVI
         {
             this.Slave.Write(new byte[] { (byte)measurementMode });
             Task.Delay(10).Wait();
-        }
-
-        public int GetLightLevel()
-        {
-            var readBuffer = new byte[2];
-
-            this.Slave.WriteRead(new byte[] { I2C_ADDRESS }, readBuffer);
-
-            var lightLevel = readBuffer[0] << 8 | readBuffer[1];
-
-            return (int)(((float)lightLevel) / 1.2f);
         }
     }
 }
