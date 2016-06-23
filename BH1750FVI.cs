@@ -6,7 +6,12 @@ namespace Magellanic.Sensors.BH1750FVI
 {
     public class BH1750FVI : AbstractI2CDevice
     {
-        private byte I2C_ADDRESS = 0x23;
+        private byte I2C_ADDRESS;
+
+        public BH1750FVI(AddPinConnection pinConnection)
+        {
+            I2C_ADDRESS = (byte)pinConnection;
+        }
 
         public override byte[] GetDeviceId()
         {
